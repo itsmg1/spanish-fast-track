@@ -249,6 +249,25 @@ const COGNATE_RULES = [
   {id:"ura", en:"-ure", es:"-ura", words:[["culture","cultura"],["temperature","temperatura"],["literature","literatura"],["adventure","aventura"],["architecture","arquitectura"],["future","futuro"]], trap:"future is the odd one: futuro"},
   {id:"izar", en:"-ize", es:"-izar", words:[["organize","organizar"],["realize","realizar"],["normalize","normalizar"],["visualize","visualizar"],["memorize","memorizar"],["finalize","finalizar"]], trap:"careful: realizar means to carry out, not to realize (that is darse cuenta)"},
 ];
+/* Core vocabulary, Mexican usage. "english=spanish;alternative" separated by | */
+const VOCAB = [
+  {id:"phrases", name:"Survival phrases", w:"good morning=buenos días|good afternoon=buenas tardes|good night=buenas noches|how are you?=¿cómo estás?;¿cómo está?|nice to meet you=mucho gusto|see you later=hasta luego|please=por favor|thank you=gracias|you're welcome=de nada|excuse me, sorry=perdón;disculpe|I don't understand=no entiendo|can you repeat?=¿puede repetir?|slower, please=más despacio, por favor|where is the bathroom?=¿dónde está el baño?|I would like...=quisiera...|the bill, please=la cuenta, por favor|how much is it?=¿cuánto cuesta?|what time is it?=¿qué hora es?|of course=claro|it's fine, OK=está bien|cheers=salud|I'm just looking=solo estoy viendo"},
+  {id:"little", name:"Little words", w:"what=qué|who=quién|where=dónde|when=cuándo|why=por qué|how=cómo|how much=cuánto|which=cuál|because=porque|but=pero|and=y|or=o|with=con|without=sin|for=para|very=muy|a lot=mucho|a little=un poco|also=también|more=más|less=menos|already=ya|still, yet=todavía|maybe=tal vez;quizás|here=aquí|there=ahí;allá|everything=todo|nothing=nada|someone=alguien|nobody=nadie"},
+  {id:"people", name:"People & family", w:"man=el hombre|woman=la mujer|baby=el bebé|child, boy=el niño|girl=la niña|friend (male)=el amigo|friend (female)=la amiga|mom=la mamá|dad=el papá|parents=los papás;los padres|son=el hijo|daughter=la hija|brother=el hermano|sister=la hermana|grandmother=la abuela|grandfather=el abuelo|husband=el esposo|wife=la esposa|boyfriend=el novio|girlfriend=la novia|aunt=la tía|uncle=el tío|cousin=el primo|neighbour=el vecino|people=la gente|family=la familia"},
+  {id:"food", name:"Food & drink", w:"water=el agua|coffee=el café|milk=la leche|juice=el jugo|beer=la cerveza|wine=el vino|soft drink=el refresco|bread=el pan|egg=el huevo|rice=el arroz|beans=los frijoles|chicken=el pollo|meat=la carne|fish=el pescado|cheese=el queso|fruit=la fruta|apple=la manzana|potato=la papa|tomato=el jitomate;el tomate|avocado=el aguacate|corn=el maíz|salt=la sal|sugar=el azúcar|breakfast=el desayuno|lunch (main meal)=la comida|dinner=la cena|spicy=picante|delicious=rico;delicioso"},
+  {id:"home", name:"Home & things", w:"house=la casa|apartment=el departamento|bedroom=la recámara;el cuarto|bathroom=el baño|kitchen=la cocina|living room=la sala|door=la puerta|window=la ventana|table=la mesa|chair=la silla|bed=la cama|key=la llave|cell phone=el celular|computer=la computadora|car=el carro;el coche|book=el libro|glasses=los lentes|clothes=la ropa|shoes=los zapatos|bag=la bolsa|pen=la pluma|money=el dinero"},
+  {id:"time", name:"Time & days", w:"today=hoy|tomorrow=mañana|yesterday=ayer|now=ahora|later=más tarde|always=siempre|never=nunca|sometimes=a veces|early=temprano|late=tarde|day=el día|week=la semana|month=el mes|year=el año|morning=la mañana|afternoon=la tarde|night=la noche|Monday=lunes|Tuesday=martes|Wednesday=miércoles|Thursday=jueves|Friday=viernes|Saturday=sábado|Sunday=domingo|weekend=el fin de semana|hour=la hora"},
+  {id:"numbers", name:"Numbers", w:"one=uno|two=dos|three=tres|four=cuatro|five=cinco|six=seis|seven=siete|eight=ocho|nine=nueve|ten=diez|eleven=once|twelve=doce|fifteen=quince|twenty=veinte|thirty=treinta|fifty=cincuenta|one hundred=cien|five hundred=quinientos|a thousand=mil|first=primero|half=la mitad"},
+  {id:"places", name:"Places & directions", w:"city=la ciudad|street=la calle|store=la tienda|market=el mercado|supermarket=el súper;el supermercado|bank=el banco|pharmacy=la farmacia|church=la iglesia|park=el parque|beach=la playa|school=la escuela|office=la oficina|downtown=el centro|corner=la esquina|to the left=a la izquierda|to the right=a la derecha|straight ahead=derecho;todo derecho|near=cerca|far=lejos|next to=al lado de|in front of=enfrente de|behind=detrás de"},
+  {id:"travel", name:"Travel", w:"bus=el camión|plane=el avión|train=el tren|taxi=el taxi|ticket=el boleto|suitcase=la maleta|passport=el pasaporte|flight=el vuelo|trip=el viaje|map=el mapa|entrance=la entrada|exit=la salida|room=la habitación;el cuarto|reservation=la reservación|luggage=el equipaje|tourist=el turista|vacation=las vacaciones"},
+  {id:"body", name:"Body & health", w:"head=la cabeza|hand=la mano|foot=el pie|eye=el ojo|mouth=la boca|back=la espalda|stomach=el estómago|tooth=el diente|arm=el brazo|leg=la pierna|doctor=el doctor;la doctora|medicine=la medicina|pain=el dolor|sick=enfermo;enferma|cold, flu=la gripa|fever=la fiebre|it hurts=me duele|I feel bad=me siento mal|hospital=el hospital|allergy=la alergia"},
+  {id:"describe", name:"Describing things", w:"big=grande|small=chico;pequeño|good=bueno|bad=malo|new=nuevo|old (thing)=viejo|young=joven|pretty=bonito|ugly=feo|easy=fácil|difficult=difícil|cheap=barato|expensive=caro|hot=caliente|cold=frío|happy=feliz|sad=triste|ready=listo|full=lleno|empty=vacío|open=abierto|closed=cerrado|fast=rápido|slow=lento|clean=limpio|dirty=sucio|long=largo|short=corto|cool, great=padre;genial"},
+  {id:"verbs2", name:"Everyday verbs", w:"to work=trabajar|to study=estudiar|to buy=comprar|to pay=pagar|to open=abrir|to close=cerrar|to drink=tomar;beber|to sleep=dormir|to walk=caminar|to run=correr|to drive=manejar|to cook=cocinar|to clean=limpiar|to read=leer|to write=escribir|to listen=escuchar|to look for=buscar|to find=encontrar|to wait=esperar|to help=ayudar|to understand=entender|to learn=aprender|to begin=empezar|to finish=terminar|to arrive=llegar|to return=regresar|to call=llamar|to ask (a question)=preguntar|to ask for=pedir|to bring=traer|to play=jugar|to love (a thing)=encantar|to know (a person)=conocer|to remember=recordar;acordarse|to forget=olvidar|to sell=vender|to use=usar|to change=cambiar|to try=probar|to travel=viajar"},
+  {id:"shopping", name:"Shopping & money", w:"price=el precio|cash=el efectivo|card=la tarjeta|change (coins back)=el cambio|receipt=el recibo;el ticket|size=la talla|discount=el descuento|bag (shopping)=la bolsa|it's too expensive=está muy caro|do you have...?=¿tiene...?|I'll take it=me lo llevo|can I pay by card?=¿puedo pagar con tarjeta?"},
+  {id:"nature", name:"Weather & nature", w:"sun=el sol|rain=la lluvia|it's hot=hace calor|it's cold=hace frío|it's raining=está lloviendo|it's sunny=hace sol|wind=el viento|sky=el cielo|sea=el mar|mountain=la montaña|tree=el árbol|flower=la flor|dog=el perro|cat=el gato|bird=el pájaro|river=el río"},
+  {id:"work", name:"Work", w:"work, job=el trabajo|meeting=la junta;la reunión|boss=el jefe;la jefa|client=el cliente|email=el correo|team=el equipo|project=el proyecto|event=el evento|schedule=el horario|deadline=la fecha límite|company=la empresa|business=el negocio|colleague=el compañero de trabajo|salary=el sueldo|to send=enviar;mandar"},
+];
+const VOCAB_WHY = "Learn nouns with their el or la. The article is part of the word in Spanish, and it decides the ending of every word that describes it: la casa bonita, el carro bonito.";
 const FALSE_FRIENDS = [
   ["embarazada","pregnant","not embarrassed (that is apenada in Mexico)"],
   ["éxito","success","not exit (that is salida)"],
@@ -520,8 +539,9 @@ async function speak(text,lang="es",rate){
   return new Promise(res=>{
     try{
       const u=new SpeechSynthesisUtterance(text.replace(/[¿¡]/g,""));
-      u.lang = lang==="es" ? "es-MX" : "en-US";
-      const v = lang==="es"?esVoice():enVoice(); if(v) u.voice=v;
+      /* the language tag must match the chosen voice, or Chrome may swap in its default (English) voice */
+      const v = lang==="es"?esVoice():enVoice();
+      u.lang = v ? v.lang : (lang==="es" ? "es-MX" : "en-US"); if(v) u.voice=v;
       u.rate = rate || (lang==="es" ? S.settings.rate : 1);
       let done=false; const fin=()=>{ if(!done){ done=true; res() } };
       u.onend=fin; u.onerror=fin; speechSynthesis.speak(u);
@@ -559,7 +579,10 @@ function matches(heard,answers){
 const COG_WHY="English and Spanish both took these words from Latin, so the middle stays and only the ending changes. Say it with the stress where the accent mark is.";
 function cognateCards(rule){ return rule.words.map(([en,es])=>({id:"cg:"+rule.id+":"+en, prompt:en, pLang:"en", answer:es, label:"Say it in Spanish", note:rule.en+" → "+rule.es, why:rule.trap&&rule.words.some(w=>w[0]===en&&rule.trap.startsWith(en))?rule.trap:COG_WHY})) }
 const ALL_COG = () => COGNATE_RULES.flatMap(cognateCards);
-const FF_CARDS = FALSE_FRIENDS.map(([es,en,why])=>({id:"ff:"+es, prompt:es, pLang:"es", answer:en, aLang:"en", label:"What does it really mean?", note:why, selfOnly:true}));
+function vocabCards(t){ return t.w.split("|").map(pair=>{ const [en,es]=pair.split("="); const [main,...alts]=es.split(";");
+  return {id:"vb:"+t.id+":"+en, prompt:en, pLang:"en", answer:main, alts, label:t.name, why:/^(el|la|los|las) /.test(main)?VOCAB_WHY:""} }) }
+const ALL_VOCAB = () => VOCAB.flatMap(vocabCards);
+const FF_CARDS =FALSE_FRIENDS.map(([es,en,why])=>({id:"ff:"+es, prompt:es, pLang:"es", answer:en, aLang:"en", label:"What does it really mean?", note:why, selfOnly:true}));
 const VERB_CARDS = POWER_VERBS.map(([es,en,ex,why])=>({id:"pv:"+es, prompt:en, pLang:"en", answer:es, label:"Say the verb", example:ex, why}));
 const CHAIN_CARDS = CHAINS.map(([en,es])=>({id:"ch:"+es, prompt:en, pLang:"en", answer:es, label:"Chain it: helper + infinitive", why:CHAIN_WHY}));
 const TR_CARDS = TRANSLATE.map(([lvl,en,es,alt])=>({id:"tr:"+es, lvl, prompt:en, pLang:"en", answer:es, alts:alt||[], label:"Build it out loud", why:LEVEL_WHY[lvl]}));
@@ -595,7 +618,7 @@ function applyPlacement(results){
 }
 function sessionCards(){
   const lvlMax = Math.max(2, ...TR_CARDS.filter(c=>{ const s=P().cards[c.id]; return s&&s.box>=2 }).map(c=>c.lvl+1));
-  const pool=[...pickSession(VERB_CARDS,6,3),...pickSession(CHAIN_CARDS,6,3),...pickSession(ALL_COG(),8,4),
+  const pool=[...pickSession(ALL_VOCAB(),10,5),...pickSession(VERB_CARDS,6,3),...pickSession(CHAIN_CARDS,6,3),...pickSession(ALL_COG(),8,4),
     ...pickSession(conjCards(CONJ_VERBS,"present"),8,4),...pickSession(TR_CARDS.filter(c=>c.lvl<=lvlMax),8,4)];
   const seen=new Set(); return pool.filter(c=>!seen.has(c.id)&&seen.add(c.id));
 }
@@ -636,6 +659,7 @@ const fmtH = m => m>=60 ? (m/60).toFixed(m>=600?0:1)+" h" : m+" min";
 /* ============ VIEWS ============ */
 const MODULES = [
   {id:"cognates", t:"Cognate unlock", d:"Swap the ending, get the word. Thousands for free.", tag:"talk"},
+  {id:"vocab", t:"Core vocabulary", d:"350 everyday words and phrases by theme: food, family, travel, time.", tag:"talk"},
   {id:"verbs", t:"Power verbs + chains", d:"20 verbs that carry most speech, then helper + infinitive.", tag:"talk"},
   {id:"builder", t:"Sentence builder", d:"Pick one tile per column. See how Spanish fits together.", tag:"tap"},
   {id:"conj", t:"Conjugation grid", d:"One pattern for -ar, -er, -ir, then the big irregulars.", tag:"talk"},
@@ -786,10 +810,21 @@ function vCognates(){
   <div class="hero"><p class="eyebrow">Trap round</p><h3>False friends</h3><p class="muted">Words that look English but mean something else. Hear the Spanish, say what it really means.</p></div>
   <button class="btn" data-act="ffround">Start the false-friend round</button>`;
 }
+/* --- vocabulary --- */
+function vVocab(){
+  const st=P().cards; const all=ALL_VOCAB(); const known=all.filter(c=>st[c.id]&&st[c.id].box>=2).length;
+  return `<div class="mhead">${back()}${settingsBar()}</div>
+  <div class="hero"><p class="eyebrow">Step 2 · Core vocabulary</p><h2>The words you'll use every day.</h2>
+  <p class="muted">${all.length} high-frequency words and phrases in Mexican Spanish. You hear the English, you say the Spanish. ${known} known so far.</p></div>
+  <p class="why"><b>Why:</b> ${h(VOCAB_WHY)}</p>
+  <button class="btn primary" data-act="vocabmix">Mixed round: due and new words</button>
+  <div class="grid2">${VOCAB.map(t=>{ const cs=vocabCards(t); const k=cs.filter(c=>st[c.id]&&st[c.id].box>=2).length;
+    return `<button class="pick" data-act="vocabtheme" data-id="${t.id}"><span class="big">${h(t.name)}</span><span class="ex">${h(cs[0].prompt)} → ${h(cs[0].answer)}</span><span class="lvl">${k}/${cs.length} known</span></button>` }).join("")}</div>`;
+}
 /* --- verbs --- */
 function vVerbs(){
   return `<div class="mhead">${back()}${settingsBar()}</div>
-  <div class="hero"><p class="eyebrow">Step 2 · Power verbs</p><h2>Twenty verbs do most of the talking.</h2>
+  <div class="hero"><p class="eyebrow">Step 3 · Power verbs</p><h2>Twenty verbs do most of the talking.</h2>
   <p class="muted">Learn the verb, then chain it: one helper you already know plus any infinitive. Voy a + verb gives you the future with zero new endings.</p></div>
   <p class="why"><b>Why chains work:</b> ${h(CHAIN_WHY)}</p>
   <div class="actions" style="justify-content:flex-start"><button class="btn primary" data-act="verbround">Power verbs round</button><button class="btn" data-act="chainround">Chains round</button></div>
@@ -805,7 +840,7 @@ function agreement(b,sel){
 }
 function vBuilder(){
   if(!view.b) return `<div class="mhead">${back()}${settingsBar()}</div>
-  <div class="hero"><p class="eyebrow">Step 3 · Sentence builder</p><h2>Read across. Build a real sentence.</h2>
+  <div class="hero"><p class="eyebrow">Step 4 · Sentence builder</p><h2>Read across. Build a real sentence.</h2>
   <p class="muted">Each column is one slot in a Spanish sentence. Tap one tile per column and hear the result, or take a challenge and build the English prompt.</p></div>
   <p class="why"><b>Why:</b> the who and the verb must match (yo quiero, ellos quieren). The builder warns you when they don't, which is how the pattern sinks in.</p>
   <div class="grid2">${BUILDERS.map(b=>`<button class="pick" data-act="bopen" data-id="${b.id}"><span class="big">${h(b.name)}</span><span class="ex">${h(b.cols.map(c=>c[1][0][0]).join(" "))}</span></button>`).join("")}</div>`;
@@ -837,7 +872,7 @@ function vConj(){
   const tense=view.tense||"present", verb=view.verb||"hablar";
   const {forms,irregular,stem}=conj(verb,tense);
   return `<div class="mhead">${back()}${settingsBar(`<button class="toggle" data-act="voso" aria-pressed="${S.settings.vosotros}">Include vosotros</button>`)}</div>
-  <div class="hero"><p class="eyebrow">Step 4 · Conjugation grid</p><h2>One pattern, three endings.</h2>
+  <div class="hero"><p class="eyebrow">Step 5 · Conjugation grid</p><h2>One pattern, three endings.</h2>
   <p class="muted">Regular verbs follow the grid. Irregulars are worth learning as their own little songs: say each row out loud.</p></div>
   <p class="why"><b>Why:</b> ${h(TENSE_WHY[tense])}</p>
   <div class="settings"><div class="seg" role="group" aria-label="Tense"><button data-act="tense" data-t="present" aria-pressed="${tense==="present"}">Present</button><button data-act="tense" data-t="preterite" aria-pressed="${tense==="preterite"}">Past</button></div>
@@ -853,7 +888,7 @@ function vConj(){
 function vTranslate(){
   const st=P().cards; const lv=[1,2,3,4,5];
   return `<div class="mhead">${back()}${settingsBar()}</div>
-  <div class="hero"><p class="eyebrow">Step 5 · Translate out loud</p><h2>Think it through, then say it.</h2>
+  <div class="hero"><p class="eyebrow">Step 6 · Translate out loud</p><h2>Think it through, then say it.</h2>
   <p class="muted">You'll hear an English sentence. Build the Spanish in your head from pieces you know and say it before revealing. Each level stacks on the last.</p></div>
   <div class="grid2">${lv.map(l=>{ const cs=TR_CARDS.filter(c=>c.lvl===l); const k=cs.filter(c=>st[c.id]&&st[c.id].box>=2).length;
     return `<button class="pick" data-act="trlevel" data-l="${l}"><span class="big">Level ${l}</span><span class="ex">${h(cs[0].prompt)}</span><span class="lvl">${k}/${cs.length} known</span></button>`}).join("")}</div>`;
@@ -861,7 +896,7 @@ function vTranslate(){
 /* --- listen + shadow --- */
 function vListen(){
   if(!view.dl) return `<div class="mhead">${back()}${settingsBar()}</div>
-  <div class="hero"><p class="eyebrow">Step 6 · Listen, catch, repeat</p><h2>Understand first. Read second.</h2>
+  <div class="hero"><p class="eyebrow">Step 7 · Listen, catch, repeat</p><h2>Understand first. Read second.</h2>
   <p class="muted">Play a short dialogue with the text blurred and try to catch the meaning. Then use Repeat after me: hear each line, say it straight back.</p></div>
   <div class="grid2">${DIALOGUES.map(d=>`<button class="pick" data-act="dopen" data-id="${d.id}"><span class="big">${h(d.name)}</span><span class="ex">${h(d.lines[0][1])}</span></button>`).join("")}</div>
   <div class="panel"><div class="panel-head"><h3>Real listening</h3><button class="btn small" data-act="open" data-mod="log">Log minutes</button></div>
@@ -995,7 +1030,7 @@ async function chatSend(text){
 /* ============ MAIN RENDER ============ */
 function render(){
   if(!S.active||!S.profiles[S.active]||view.name==="profiles"){ app.innerHTML=vProfiles(); bindForms(); return }
-  const v={home:vHome,drill:vDrill,cognates:vCognates,verbs:vVerbs,builder:vBuilder,conj:vConj,translate:vTranslate,listen:vListen,chat:vChat,milestones:vMilestones,log:vLog}[view.name]||vHome;
+  const v={home:vHome,drill:vDrill,cognates:vCognates,verbs:vVerbs,builder:vBuilder,conj:vConj,translate:vTranslate,listen:vListen,vocab:vVocab,chat:vChat,milestones:vMilestones,log:vLog}[view.name]||vHome;
   app.innerHTML=v(); bindForms();
   const cs=document.getElementById("chatstep"); if(cs) cs.hidden=!sample;
   const log=document.getElementById("chatlog"); if(log) log.scrollTop=log.scrollHeight;
@@ -1038,6 +1073,9 @@ app.addEventListener("click",e=>{
     case "cogrule": { const r=COGNATE_RULES.find(x=>x.id===b.dataset.id); startDrill("Cognates "+r.en+" → "+r.es,"cognates",shuffle(cognateCards(r))); break }
     case "cogmix": startDrill("Mixed cognates","cognates",pickSession(ALL_COG(),12,8)); break;
     case "ffround": startDrill("False friends","cognates",pickSession(FF_CARDS,8,8)); break;
+    /* vocabulary */
+    case "vocabmix": startDrill("Core vocabulary","vocab",pickSession(ALL_VOCAB(),15,8)); break;
+    case "vocabtheme": { const t=VOCAB.find(x=>x.id===b.dataset.id); startDrill(t.name,"vocab",pickSession(vocabCards(t),12,12)); break }
     /* verbs */
     case "verbround": startDrill("Power verbs","verbs",pickSession(VERB_CARDS,10,6)); break;
     case "chainround": startDrill("Chains","verbs",pickSession(CHAIN_CARDS,10,8)); break;
