@@ -496,15 +496,29 @@ function knownCount(){ const p=P(); if(!p) return 0; return Object.values(p.card
 
 /* ============ VOICE ============ */
 let voices=[];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function hush(){ try{ if(speechSynthesis.speaking||speechSynthesis.pending) speechSynthesis.cancel() }catch(e){} }
 function loadVoices(){ try{ voices=speechSynthesis.getVoices() }catch(e){ voices=[] } }
-try{ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices }catch(e){}
-function esVoice(){ return voices.find(v=>/^es[-_]MX/i.test(v.lang)) || voices.find(v=>/^es[-_](US|419)/i.test(v.lang)) || voices.find(v=>/^es/i.test(v.lang)) }
-function enVoice(){ return voices.find(v=>/^en[-_]/i.test(v.lang)) }
-function speak(text,lang="es",rate){
+try{ loadVoices(); speechSynthesis.onvoiceschanged=()=>{ loadVoices(); if(typeof render==="function"&&(view.name==="home"||view.name==="profiles")) render() } }catch(e){}
+/* A woman's voice everywhere: voices carry no gender field, so known names decide. Google's Spanish voices are female. */
+const FEMALE=/sabina|dalia|paulina|m[oó]nica|helena|laura|elvira|ximena|renata|larissa|marisol|paloma|luc[ií]a|elena|carmen|isabel|beatriz|catalina|camila|valentina|francisca|google espa|zira|aria|jenny|samantha|karen|female|mujer/i;
+const MALE=/ra[uú]l|jorge|pablo|juan|diego|carlos|gerardo|[aá]lvaro|enrique|tom[aá]s|jos[eé]|andr[eé]s|david|mark|guy|male|hombre/i;
+const isFemale=v=>FEMALE.test(v.name)&&!/\bmale\b/i.test(v.name);
+const esVoices=()=>voices.filter(v=>/^es/i.test(v.lang));
+function rankEs(v){ const lat=/^es[-_]MX/i.test(v.lang)?3:/^es[-_](US|419)/i.test(v.lang)?2:1; return (isFemale(v)?100:MALE.test(v.name)?0:50)+lat*10+(/natural|online|neural/i.test(v.name)?5:0) }
+function esVoice(){ const pick=S.settings.voice&&voices.find(v=>v.name===S.settings.voice); if(pick) return pick; return esVoices().sort((a,b)=>rankEs(b)-rankEs(a))[0] }
+function enVoice(){ const en=voices.filter(v=>/^en[-_]/i.test(v.lang)); return en.find(isFemale)||en.find(v=>!MALE.test(v.name))||en[0] }
+function voiceLabel(v){ return v.name.replace(/^(Microsoft|Google)\s+/,"").replace(/\s*-\s*Spanish.*$/,"")+" ("+v.lang+(isFemale(v)?", woman":MALE.test(v.name)?", man":"")+")" }
+/* Chrome's Google voices drop to the default (English) voice when a new line starts right after cancel(),
+   so only cancel when something is actually playing, give the engine a beat, and re-read the voice list every time. */
+async function speak(text,lang="es",rate){
+  if(!("speechSynthesis" in window)) return;
+  try{
+    if(speechSynthesis.speaking||speechSynthesis.pending){ speechSynthesis.cancel(); await wait(120) }
+    if(!voices.length) loadVoices();
+  }catch(e){}
   return new Promise(res=>{
     try{
-      if(!("speechSynthesis" in window)) return res();
-      speechSynthesis.cancel();
       const u=new SpeechSynthesisUtterance(text.replace(/[¿¡]/g,""));
       u.lang = lang==="es" ? "es-MX" : "en-US";
       const v = lang==="es"?esVoice():enVoice(); if(v) u.voice=v;
@@ -515,7 +529,6 @@ function speak(text,lang="es",rate){
     }catch(e){ res() }
   });
 }
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
 const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
 let micState = Rec ? "unknown" : "none"; // unknown | ok | blocked | none
 function listen(){
@@ -607,7 +620,7 @@ async function recDel(id){ const db=await idb(); return new Promise(res=>{ const
 const app=document.getElementById("app");
 const h=(s)=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 let view={name:"home"};
-function stopAll(){ try{speechSynthesis.cancel()}catch(e){} clearInterval(handsTimer); if(view.drill) view.drill.hands=false; view.shadowing=false; view.playing=false; stopRecording(true) }
+function stopAll(){ hush(); clearInterval(handsTimer); if(view.drill) view.drill.hands=false; view.shadowing=false; view.playing=false; stopRecording(true) }
 function go(name,args={}){ stopAll(); view={name,...args}; render(); window.scrollTo(0,0) }
 function topbar(){
   const p=P();
@@ -666,7 +679,16 @@ function vHome(){
    <p class="muted" style="font-size:.9rem">${wkMin} min of listening. ${conv.length?`Conversation done this week (${conv.reduce((a,x)=>a+x.m,0)} min).`:"No conversation logged yet this week."}</p>
    <div class="row"><button class="btn small" data-act="addlisten" data-m="15">+15 min listening</button><button class="btn small" data-act="addlisten" data-m="30">+30 min</button></div></div>
 
+  ${voicePanel()}
   <p class="note">${micState==="blocked"||micState==="none"?"Voice checking isn't available in this view, so drills use say it, then reveal. Speaking out loud is what does the work.":"Tap Speak to be checked automatically, or just say it and reveal."} <span id="sync">${h(syncLabel)}</span></p>`;
+}
+function voicePanel(){
+  const list=esVoices().sort((a,b)=>rankEs(b)-rankEs(a)); const cur=esVoice();
+  if(!list.length) return `<p class="heard no">This device has no Spanish voice, so Spanish will sound wrong. On a phone, install a Spanish voice in the phone's text-to-speech settings. On Windows, add the Spanish (Mexico) language with its speech pack, or open this app in Chrome or Edge.</p>`;
+  const noWoman=!list.some(isFemale);
+  return `<div class="panel"><div class="panel-head"><h3>Voice</h3><button class="btn small" data-act="testvoice">Hear it</button></div>
+   <div class="row"><label for="voicesel" class="eyebrow">Spanish voice</label><select id="voicesel" style="flex:1;min-width:0">${list.map(v=>`<option value="${h(v.name)}" ${cur&&v.name===cur.name?"selected":""}>${h(voiceLabel(v))}</option>`).join("")}</select></div>
+   <p class="muted" style="font-size:.85rem">${noWoman?"No woman's Spanish voice found on this device, so the closest match is used. Add one in the device's speech settings.":"Every exercise uses this voice. A Mexican woman's voice is picked first when the device has one."}</p></div>`;
 }
 let monthlyCache=null;
 function monthlyDueText(){
@@ -983,6 +1005,7 @@ function bindForms(){
   const f=document.getElementById("addpf");
   if(f) f.onsubmit=e=>{ e.preventDefault(); const n=document.getElementById("pfname").value.trim(); if(!n) return; if(!S.profiles[n]) S.profiles[n]=newProfile(); S.active=n; monthlyCache=null; save(); go("home") };
   const vs=document.getElementById("verbsel"); if(vs) vs.onchange=()=>{ view.verb=vs.value; render() };
+  const vo=document.getElementById("voicesel"); if(vo) vo.onchange=()=>{ S.settings.voice=vo.value; save(); speak("Hola, vamos a practicar español.","es") };
   const cf=document.getElementById("composer");
   if(cf) cf.onsubmit=e=>{ e.preventDefault(); const t=document.getElementById("chatin").value.trim(); if(t) chatSend(t) };
 }
@@ -999,6 +1022,7 @@ app.addEventListener("click",e=>{
     case "open": go(b.dataset.mod); break;
     case "rate": S.settings.rate = S.settings.rate<0.8?0.9:0.7; save(); render(); break;
     case "say": speak(b.dataset.text,"es"); break;
+    case "testvoice": speak("Hola, vamos a practicar español.","es"); break;
     case "session": startDrill("Hands-free session","session",sessionCards(),{hands:true,session:true}); break;
     case "placement": startDrill("Placement","placement",PLACEMENT.map(p=>({...p.c,label:"Placement check"})),{placement:true}); break;
     /* drill */
@@ -1009,7 +1033,7 @@ app.addEventListener("click",e=>{
     case "miss": nextCard(false); break;
     case "mic": micAnswer(); break;
     case "again": { const src=d.source; startDrill(d.title,d.mod,pickSession(src,Math.min(10,src.length))); break }
-    case "handsfree": d.hands=!d.hands; clearInterval(handsTimer); try{speechSynthesis.cancel()}catch(x){} d.revealed=false; render(); if(d.hands) handsLoop(); break;
+    case "handsfree": d.hands=!d.hands; clearInterval(handsTimer); hush(); d.revealed=false; render(); if(d.hands) handsLoop(); break;
     /* cognates */
     case "cogrule": { const r=COGNATE_RULES.find(x=>x.id===b.dataset.id); startDrill("Cognates "+r.en+" → "+r.es,"cognates",shuffle(cognateCards(r))); break }
     case "cogmix": startDrill("Mixed cognates","cognates",pickSession(ALL_COG(),12,8)); break;
@@ -1041,7 +1065,7 @@ app.addEventListener("click",e=>{
     case "dline": { const i=+b.dataset.i; view.shown[i]=true; render(); const dd=DIALOGUES.find(x=>x.id===view.dl); speak(dd.lines[i][1],"es"); break }
     case "ddone": markDone("listen"); go("home"); break;
     case "shadow": shadowLoop(); break;
-    case "shstop": view.shadowing=false; try{speechSynthesis.cancel()}catch(x){} view.now=null; render(); break;
+    case "shstop": view.shadowing=false; hush(); view.now=null; render(); break;
     case "dplay": (async()=>{ if(view.playing) return; view.playing=true; render(); const dd=DIALOGUES.find(x=>x.id===view.dl); const id=view.dl;
       for(let i=0;i<dd.lines.length;i++){ if(view.dl!==id||view.name!=="listen"||!view.playing) break; view.now=i; render(); await speak(dd.lines[i][1],"es"); await wait(450) } view.playing=false; view.now=null; if(view.name==="listen") render() })(); break;
     /* milestones */
